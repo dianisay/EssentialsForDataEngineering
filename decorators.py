@@ -140,5 +140,126 @@ def print_text():
     print("Hello World")
 ​
 print_text()
-Sleeping for 3 seconds before running print_text
-Hello World
+
+#-------------IMPROVED TIMER---------------------
+#Tracks fastest and slowest execution times for a function.
+#logs these durations across multiple calls.
+
+from time import time
+
+def timer(func):
+    fastest = float('inf')
+    slowest = 0
+
+    def wrapper(*args, **kwargs):
+        nonlocal fastest, slowest
+        start = time()
+        result = func(*args, **kwargs)
+        end = time()
+        duration = end - start
+
+        fastest = min(fastest, duration)
+        slowest = max(slowest, duration)
+
+        print(f"Duration: {duration:.6f} sec | Fastest: {fastest:.6f} sec | Slowest: {slowest:.6f} sec")
+        return result
+    return wrapper
+
+@timer
+def sum_nums():
+    return sum(range(1000000))
+
+sum_nums()  # Call multiple times to observe fastest and slowest
+sum_nums()
+
+#----------------------Debug DecoratoR---------------------
+#Automatically enters Python's debugger (pdb) before function execution.
+#Useful for inspecting values before running a function.
+
+import pdb
+
+def debug(func):
+    def wrapper(*args, **kwargs):
+        print(f"Entering debugger before calling {func.__name__}")
+        pdb.set_trace()  # Enter interactive debugging mode
+        return func(*args, **kwargs)
+    return wrapper
+
+@debug
+def test_debug(x, y):
+    return x + y
+
+# Call function, will enter debugger
+# test_debug(5, 10)
+
+
+#----------------------Retry Decorator -------------------------------
+
+#Retries a function up to max_attempts times if it fails.
+#Can be used for functions that randomly fail due to network issues, API calls, etc.
+
+import time
+import random
+
+def retry(max_attempts=3, delay=1):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            attempts = 0
+            while attempts < max_attempts:
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    print(f"Attempt {attempts+1} failed: {e}")
+                    attempts += 1
+                    time.sleep(delay)
+            print(f"Function {func.__name__} failed after {max_attempts} attempts.")
+            return None
+        return wrapper
+    return decorator
+
+@retry(max_attempts=5, delay=2)
+def unstable_function():
+    if random.random() < 0.7:  # 70% chance of failure
+        raise ValueError("Random failure!")
+    return "Success!"
+
+# unstable_function()  # Call multiple times to see retries in action
+
+#--------------------------Enhanced Cache with LRU Expiration 
+#Implements an LRU (Least Recently Used) cache using functools.lru_cache.
+#Limits cache size to avoid memory overuse.
+
+from functools import lru_cache
+
+@lru_cache(maxsize=5)  # Caches up to 5 results
+def fibonacci(n):
+    if n < 2:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+print(fibonacci(10))  # Caching speeds up repeated calls
+print(fibonacci(9))   # Uses cache instead of recalculating
+
+
+#-----------------------------Parameterized Delay Decorator-------------------
+#Allows dynamic delay customization using parameters.
+
+import time
+from functools import wraps
+
+def delay(seconds=1):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            print(f"Sleeping for {seconds} seconds before running {func.__name__}")
+            time.sleep(seconds)
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
+@delay(seconds=3)
+def print_text():
+    print("Hello, delayed world!")
+
+print_text()  # Will wait 3 seconds before execution
+
