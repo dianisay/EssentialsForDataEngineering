@@ -1,6 +1,23 @@
 
-Timing Decorator
-# Function decorator that times execution
+#Timing Decorator : In Python, decorators are special functions that modify other functions without changing their actual code. 
+#Think of them like add-ons or filters that can enhance what a function does.
+#THIS FILE INCLUDES:
+#Measuring performance (timer)
+#Logging function calls (logger)
+#Improving efficiency (cache)
+#Adding delays (delay)
+
+
+
+
+# -----------------Function decorator that times execution-----------------
+# What does it do? It measures how long a function takes to run.
+
+# How does it work? The timer decorator records the time before and after the function runs. 
+# It then calculates the difference (how long it took to execute) and prints it.
+
+#Why is this useful? It helps you know if a function is too slow and needs optimization.
+
 from time import time
 ​
 def timer(func):
@@ -18,8 +35,15 @@ def sum_nums():
         result += x
 ​
 sum_nums()
-Duration: 0.05103158950805664
-Logging Decorator
+
+
+#----------------------Logging Decorator----------------------------------
+# What does it do? It prints what function is being called, along with its arguments.
+
+#How does it work? The logger decorator prints the function name and the values it was called with before actually running it.
+
+#Why is this useful? It helps track which functions are being called and with what inputs.
+
 def logger(func):
     def wrapper(*args, **kwargs):
         print(f"Ran {func.__name__} with args: {args}, and kwargs: {kwargs}")
@@ -35,10 +59,16 @@ def sub(x, y):
 ​
 add(10, 20)
 sub(30, 20)
-Ran add with args: (10, 20), and kwargs: {}
-Ran sub with args: (30, 20), and kwargs: {}
-10
-Caching Decorator
+
+
+#--------------------Caching Decorator---------------------------
+# What does it do? It saves (caches) results of expensive function calls so they don’t have to be recalculated.
+
+# How does it work? When the function is first called with a specific input, the result is stored.
+# If called again with the same input, it returns the stored result instantly.
+
+# Why is this useful? If a function is slow, caching prevents unnecessary re-computation.
+
 import functools
 ​
 def cache(func):
@@ -71,14 +101,23 @@ Wall time: 2 s
 CPU times: user 619 µs, sys: 100 µs, total: 719 µs
 Wall time: 725 µs
 @cache
+
+##### Fibonacci Example: The cache decorator speeds up recursive functions like Fibonacci by storing results.
 def fibonacci(n):
     if n < 2:
         return n
     else:
         return fibonacci(n-1) + fibonacci(n-2)
 fibonacci(10)
-55
-Delay
+
+
+#---------------------------------Delay Decorator----------------
+#What does it do? It makes a function wait before running.
+
+#How does it work? It tells Python to sleep for a certain number of seconds before executing the function.
+
+#Why is this useful? Great for delaying retries or slowing down API calls.
+
 import time
 from functools import wraps
 ​
