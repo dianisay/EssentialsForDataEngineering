@@ -92,17 +92,11 @@ def expensive_func(x):
 ​
 ​
 %time print(expensive_func(1))
-expensive_func ran in 2.00 secs
-1
-CPU times: user 10.4 ms, sys: 2.82 ms, total: 13.2 ms
-Wall time: 2 s
+
 %time print(expensive_func(1))
-1
-CPU times: user 619 µs, sys: 100 µs, total: 719 µs
-Wall time: 725 µs
-@cache
 
 ##### Fibonacci Example: The cache decorator speeds up recursive functions like Fibonacci by storing results.
+@cache
 def fibonacci(n):
     if n < 2:
         return n
